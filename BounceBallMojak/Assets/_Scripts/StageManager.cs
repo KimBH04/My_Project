@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StageManager : MonoBehaviour
 {
@@ -12,8 +13,12 @@ public class StageManager : MonoBehaviour
         stars = GameObject.FindGameObjectsWithTag("Star").Length;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("Select");
+        }
     }
 
     public void StarCount()

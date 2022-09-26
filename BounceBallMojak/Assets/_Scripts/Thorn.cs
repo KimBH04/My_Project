@@ -15,7 +15,8 @@ public class Thorn : MonoBehaviour
     {
         if (collision.gameObject.name == "Ball")
         {
-            Destroy(collision.gameObject);
+            GameObject ball = collision.gameObject;
+            Destroy(ball);
             gameManager.GetComponent<GameManager>().StageRestart();
         }
     }

@@ -1,25 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Ball : MonoBehaviour
 {
     public float jumpPower;
     public float speed;
+    public Tilemap ball;
 
+    private bool isWall;
     private bool isCanonL, isCanonR;
     private bool isFarJump, isHighJump;
     private float time;
     private Rigidbody2D rigid2d;
 
-    private float lastTouchTime;
-    private float doubleTouchD;
-
     private void Awake()
     {
         rigid2d = GetComponent<Rigidbody2D>();
-        doubleTouchD = .5f;
-        lastTouchTime = Time.time;
     }
 
     private void FixedUpdate()
@@ -31,41 +29,60 @@ public class Ball : MonoBehaviour
         if (isCanonL)
         {
             transform.localPosition = new Vector2(transform.localPosition.x - Time.deltaTime * 4f, transform.localPosition.y);
+
+            if (input != 0)
+            {
+                isCanonL = false;
+            }
         }
         else if (isCanonR)
         {
+            transform.localPosition = new Vector2(transform.localPosition.x - Time.deltaTime * -4f, transform.localPosition.y);
 
+            if (input != 0)
+            {
+                isCanonR = false;
+            }
         }
         else
         {
             rigid2d.gravityScale = 1f;
         }
 
-        if (isFarJump && Input.touchCount == 0)
+
+        if (isFarJump)
         {
-            Debug.Log("ÅÍÄ¡");
-            Touch touch = Input.GetTouch(0);
+            Debug.Log("far");
 
-            if (touch.phase == TouchPhase.Began)
+            if (Input.GetKey(KeyCode.LeftShift))
             {
-                if (Time.time - lastTouchTime < doubleTouchD)
+                if (input > 0)
                 {
-                    if (Input.GetTouch(0).position.x > Screen.width / 2f)
-                    {
-                        rigid2d.AddForce(Vector2.right * 200f);
-                    }
-                    else
-                    {
-                        rigid2d.AddForce(Vector2.right * -200f);
-                    }
-
+                    rigid2d.AddForce(Vector2.right * 250f);
                     isFarJump = false;
                 }
+                else if (input < 0)
+                {
+                    rigid2d.AddForce(Vector2.right * -250f);
+                    isFarJump = false;
+                }
+                ball.color = Color.white;
             }
         }
+        
         if (isHighJump)
         {
+            Debug.Log("high");
 
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                if (input != 0)
+                {
+                    rigid2d.AddForce(Vector2.up * 9f, ForceMode2D.Impulse);
+                    ball.color = Color.white;
+                    isHighJump = false;
+                }
+            }
         }
     }
 
@@ -76,6 +93,8 @@ public class Ball : MonoBehaviour
 
         if (colpoint == 4)
         {
+            isWall = false;
+
             if (_gameObject.name == "High Jump")
             {
                 rigid2d.AddForce(Vector2.up * jumpPower * 2f);
@@ -88,6 +107,8 @@ public class Ball : MonoBehaviour
             }
             else if (_gameObject.name == "Canon R")
             {
+                transform.localPosition = new Vector2(transform.localPosition.x + 1f, (int)(transform.localPosition.y - 1.5f));
+                rigid2d.gravityScale = 0f;
                 isCanonR = true;
             }
             else
@@ -95,13 +116,18 @@ public class Ball : MonoBehaviour
                 rigid2d.AddForce(Vector2.up * jumpPower);
             }
         }
+        /*
         else if (colpoint != 2)
         {
-            //rigid2d.AddForce(collision.GetContact(0).normal * 100f);
-        }
+            rigid2d.AddForce(collision.GetContact(0).normal * 100f);
+        }*/
         else
         {
-            transform.localPosition = new Vector2(transform.localPosition.x + 0.1f, transform.localPosition.y);
+            isWall = true;
+
+            Vector2 v2 = collision.GetContact(0).normal;
+            transform.localPosition = new Vector2(transform.localPosition.x + v2.x * .1f, transform.localPosition.y + v2.y * .1f);
+
             //rigid2d.AddForce(collision.GetContact(0).normal * 10f);
         }
 
@@ -112,12 +138,14 @@ public class Ball : MonoBehaviour
     {
         time += Time.deltaTime;
 
-        if (time > .2f && collision.contactCount == 3)
+        Debug.Log(collision.contactCount);
+
+        if (time > .1f && collision.contactCount == 3 && !isWall)
         {
             rigid2d.AddForce(Vector2.up * jumpPower / 2f);
         }
 
-        Debug.Log($"{time} {collision.contactCount}");
+        //Debug.Log($"{time} {collision.contactCount}");
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -130,12 +158,14 @@ public class Ball : MonoBehaviour
         if (collision.gameObject.name == "Far")
         {
             isFarJump = true;
+            ball.color = Color.red;
+            Destroy(collision.gameObject);
         }
         if (collision.gameObject.name == "High")
         {
             isHighJump = true;
+            ball.color = Color.green;
+            Destroy(collision.gameObject);
         }
-
-        Destroy(collision.gameObject);
     }
 }
