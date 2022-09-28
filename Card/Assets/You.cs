@@ -4,28 +4,66 @@ using UnityEngine;
 
 public class You : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject gm;
     public List<GameObject> MyCards;
 
-    void Start()
+    private void FixedUpdate()
     {
-
+        
     }
 
-    // Update is called once per frame
-    void Update()
+
+
+
+
+
+
+
+
+
+    public int ChangeCard(string name)
     {
-
-    }
-
-    public void Card()
-    {
-        int i = MyCards.Count / 2;
-        var v3 = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-
-        foreach (var item in MyCards)
+        for (int i = 0; i < MyCards.Count; i++)
         {
-            Instantiate(item, new Vector3(v3.x + i, v3.y - 10, v3.z + 10), Quaternion.identity);
-            i--;
+            if (name == MyCards[i].name)
+            {
+                gm.GetComponent<GameManager>().ChangeCard(MyCards[i]);
+                MyCards.RemoveAt(i);
+
+                for (int j = i; j < MyCards.Count; j++)
+                {
+                    MyCards[j].transform.position
+                        = new Vector3
+                        (
+                  /*x*/ transform.position.x + 14f - j * 1.1f,
+                  /*y*/ 3f - j * .01f,
+                  /*z*/ -20f
+                        );
+                }
+
+                Debug.Log("에엒따");
+                break;
+            }
         }
+
+        return 0;
+    }
+
+    public void Card(int num)
+    {
+        StartCoroutine(PickMyCard(num));
+    }
+
+    IEnumerator PickMyCard(int num)
+    {
+        yield return new WaitForSeconds(.7f);
+
+        var v3 = new Vector3(
+            transform.position.x + 14f - num * 1.1f, 
+            3f - num * .01f, 
+            -20f);
+
+        Instantiate(MyCards[num], v3, Quaternion.identity).transform.parent = gameObject.transform;
     }
 }
