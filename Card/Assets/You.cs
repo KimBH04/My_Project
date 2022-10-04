@@ -32,7 +32,7 @@ public class You : MonoBehaviour
                     GameObject card = GameObject.Find(MyCards[j].name);
                         card.transform.position = new Vector3
                         (
-                  /*x*/ transform.position.x + 16f - j * 2f,
+                  /*x*/ transform.position.x + 19f - j * 1.7f,
                   /*y*/ 3f - j * .01f,
                   /*z*/ -9.2f
                         );
@@ -52,7 +52,7 @@ public class You : MonoBehaviour
         //Debug.Log(num);
 
         var v3 = new Vector3(
-            transform.position.x + 16f - num * 2f, 
+            transform.position.x + 19f - num * 1.7f, 
             3f - num * .01f, 
             -19f);
 

@@ -1,12 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject _You;
     public GameObject _Aite;
     public GameObject _Draw;
+
+    public Text CardsText;
+    public Text Turn;
 
     public List<GameObject> Cards;
 
@@ -39,9 +44,29 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (GetCardStack > 0)
+        {
+            MustGetCard = true;
+        }
+
+        CardsText.text = $" My : {you.MyCards.Count} " +
+            $"Aite : {aite.AitesCards.Count} \n" +
+            $"Remain : {Cards.Count} " +
+            $"Total : {you.MyCards.Count + aite.AitesCards.Count + Cards.Count}";
+
+        if (URTrun)
+        {
+            Turn.text = "Your turn";
+        }
+        else
+        {
+            Turn.text = "Aite's turn";
+        }
+
+        Debug.Log($"Your Turn : {URTrun} || Aite's Turn : {AitesTurn}");
         //Debug.Log(ThrewOneCard);
-        Debug.Log(GetCardStack);
-        Debug.Log(MustGetCard);
+        //Debug.Log(GetCardStack);
+        //Debug.Log(MustGetCard);
     }
 
     public void TurnEnd()
@@ -49,31 +74,25 @@ public class GameManager : MonoBehaviour
     {
         if (URTrun)
         {
-            if (aite.mgc2m || you.mgc2a)
-                //공격 카드를 방어하지 못했을 경우
-            {
-                Debug.Log("제발 돼");
+            URTrun = false;
+            AitesTurn = true;
 
-                MustGetCard = true;
-                StartCoroutine(Distribute(0));
-            }
-            else if (!ThrewOneCard)
+            if (!ThrewOneCard)
                 //내가 카드를 한 번이라도 내지 않았다면
             {
-                Debug.Log("제발 되라ㅏㅏㅏㅏㅏㅏㅏ");
+                if (!aite.mgc2m)
+                {
+                    GetCardStack = 1;
+                }
 
-                MustGetCard = true;
                 aite.mgc2m = true;
-
-                GetCardStack = 1;
-                StartCoroutine(Distribute(0));
             }
 
-            URTrun = false;
             consecutive = true;
+            ThrewOneCard = false;
+            StartCoroutine(Distribute(0));
 
-            Debug.Log("여기 오긴 하니/");
-            StartCoroutine(_Aite.GetComponent<Aite>().AitesTurn(0));
+            //Debug.Log("여기 오긴 하니/");
         }
     }
 
@@ -129,6 +148,15 @@ public class GameManager : MonoBehaviour
             aite.mgc2m = you.mgc2a = false;
             GetCardStack = 0;
 
+            if (AitesTurn)
+            {
+                StartCoroutine(aite.AitesTurn(0));
+            }
+            else
+            {
+                URTrun = true;
+            }
+
             yield break;
         }
 
@@ -142,17 +170,31 @@ public class GameManager : MonoBehaviour
             you.MyCards.Add(Cards[j]);
 
             StartCoroutine(you.PickMyCard(you.MyCards.Count - 1));
+
+            Cards.RemoveAt(j);
         }
         else if (i % 2 == 1 && you.mgc2a)
             //상대에게 카드 지급
         {
+            AitesTurn = false;
+
             Instantiate(_Draw, v2, Quaternion.identity).GetComponent<Card>().speed = .7f;
 
-            _Aite.GetComponent<Aite>().AitesCards.Add(Cards[j]);
+            aite.AitesCards.Add(Cards[j]);
+            
+            Cards.RemoveAt(j);
         }
 
-        Cards.RemoveAt(j);
-
         StartCoroutine(Distribute(++i));
+    }
+
+
+
+
+
+
+    public void SceneReload()
+    {
+        SceneManager.LoadScene("SampleScene");
     }
 }

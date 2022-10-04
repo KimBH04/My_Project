@@ -74,50 +74,87 @@ public class CardManager : MonoBehaviour
     {
         if (turn && transform.parent.name != "Game Manager")
         {
+            #region Card Test
+
             string[] StackCardName = StackCard.name.Split('_');
             string[] MyCardName = gameObject.name.Split('_');
 
-            if (!manager.MustGetCard && StackCardName[0] == MyCardName[0] && Consecutive)
+            if (manager.MustGetCard)
+            {
+                if (!manager.MustGetCard && StackCardName[0] == MyCardName[0] && Consecutive)
                 //내 카드와 테이블에 놓인 카드의 모양이 같은 경우
-            {
-                ThrowACard(MyCardName[0], int.Parse(MyCardName[1]));
-            }
-            else if (MyCardName[0] == "J")
+                {
+                    if (StackCardName[1] == "2" && MyCardName[1] == "1")
+                        ThrowACard(MyCardName[0], int.Parse(MyCardName[1]));
+                }
+                else if (MyCardName[0] == "J")
                 //내가 가진 카드가 조커인 경우
-            {
-                if (MyCardName[2] == StackCardName[2] && Consecutive)
+                {
+                    if (MyCardName[2] == StackCardName[2] && Consecutive)
                     //내가 가진 카드와 테이블에 놓인 카드의 색이 같을 경우
-                {
-                    ThrowACard(MyCardName[2], 14);
-                }
-                else if (StackCardName[0] == "J"
-                    && StackCardName[2] == "B" 
-                    && MyCardName[2] == "C")
+                    {
+                        ThrowACard(MyCardName[2], 14);
+                    }
+                    else if (StackCardName[0] == "J"
+                        && StackCardName[2] == "B"
+                        && MyCardName[2] == "C")
                     //내가 가진 카드가 컬러조커이고 테이블에 놓인 카드가 흑백조커인 경우
-                {
-                    ThrowACard("C", 14);
+                    {
+                        ThrowACard("C", 14);
+                    }
                 }
-            }
-            else if (StackCardName[0] == "J")
-                //테이블에 놓인 카드가 조커인 경우
-            {
-                if (!manager.MustGetCard
-                      && MyCardName[2] == StackCardName[2]
-                      && Consecutive)
-                      //테이블에 놓인 카드와 내가 가진 카드와 색이 같은 경우
-                {
-                    ThrowACard(MyCardName[2], int.Parse(MyCardName[1]));
-                }
-            }
-            else if (StackCardName[1] == MyCardName[1])
+                else if (StackCardName[1] == MyCardName[1])
                 //숫자가 같은 경우
-            {
-                ThrowACard(MyCardName[0], int.Parse(MyCardName[1]));
+                {
+                    ThrowACard(MyCardName[0], int.Parse(MyCardName[1]));
+                }
             }
+            else
+            {
+                if (!manager.MustGetCard && StackCardName[0] == MyCardName[0] && Consecutive)
+                    //내 카드와 테이블에 놓인 카드의 모양이 같은 경우
+                {
+                    ThrowACard(MyCardName[0], int.Parse(MyCardName[1]));
+                }
+                else if (MyCardName[0] == "J")
+                    //내가 가진 카드가 조커인 경우
+                {
+                    if (MyCardName[2] == StackCardName[2] && Consecutive)
+                        //내가 가진 카드와 테이블에 놓인 카드의 색이 같을 경우
+                    {
+                        ThrowACard(MyCardName[2], 14);
+                    }
+                    else if (StackCardName[0] == "J"
+                        && StackCardName[2] == "B" 
+                        && MyCardName[2] == "C")
+                        //내가 가진 카드가 컬러조커이고 테이블에 놓인 카드가 흑백조커인 경우
+                    {
+                        ThrowACard("C", 14);
+                    }
+                }
+                else if (StackCardName[0] == "J")
+                    //테이블에 놓인 카드가 조커인 경우
+                {
+                    if (!manager.MustGetCard
+                          && MyCardName[2] == StackCardName[2]
+                          && Consecutive)
+                          //테이블에 놓인 카드와 내가 가진 카드와 색이 같은 경우
+                    {
+                        ThrowACard(MyCardName[2], int.Parse(MyCardName[1]));
+                    }
+                }
+                else if (StackCardName[1] == MyCardName[1])
+                    //숫자가 같은 경우
+                {
+                    ThrowACard(MyCardName[0], int.Parse(MyCardName[1]));
+                }
+            }
+
+            #endregion
         }
         else
         {
-            Debug.Log("isn't your turn");
+            //Debug.Log("isn't your turn");
         }
     }
 
@@ -134,13 +171,12 @@ public class CardManager : MonoBehaviour
             {
                 manager.GetCardStack += 3;
             }
-
             aite.mgc2m = false;
             you.mgc2a = true;
         }
         else if(sum == 2)
         {
-            manager.GetCardStack += sum;
+            manager.GetCardStack += 2;
 
             aite.mgc2m = false;
             you.mgc2a = true;
@@ -155,7 +191,6 @@ public class CardManager : MonoBehaviour
             {
                 manager.GetCardStack += 10;
             }
-
             aite.mgc2m = false;
             you.mgc2a = true;
         }
@@ -169,7 +204,6 @@ public class CardManager : MonoBehaviour
 
         manager.consecutive = false;
 
-        ThrewOneCard = true;
-        manager.ThrewOneCard = ThrewOneCard;
+        manager.ThrewOneCard = true;
     }
 }

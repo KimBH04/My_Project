@@ -35,7 +35,9 @@ public class Aite : MonoBehaviour
 
     public IEnumerator AitesTurn(int i)
     {
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSeconds(.1f);
+
+        ThrewCard = false;
 
         //Debug.Log(i + "asdf");
 
@@ -43,71 +45,103 @@ public class Aite : MonoBehaviour
         {
             if (!ThrewOneCard)      //한 번도 카드를 내지 않았다면
             {
-                manager.GetCardStack = 1;       //카드를 한 장 뽑는다
+                if (!you.mgc2a)
+                {
+                    manager.GetCardStack = 1;
+                }
+
                 you.mgc2a = true;
                 StartCoroutine(manager.Distribute(0));
             }
 
             manager.URTrun = true;      //나의 턴으로 변경
             manager.consecutive = true;
-            manager.ThrewOneCard = false;
             ThrewOneCard = false;
 
             yield break;
         }
 
+        #region Card Test
+
         string[] StackCardName = StackCard.name.Split('_');     //테이블에 놓인 카드의 이름
         string[] AitesCardName = AitesCards[i].name.Split('_');    //상대가 들고 있는 카드의 이름
 
-        #region Card Test
-        if (!manager.MustGetCard && StackCardName[0] == AitesCardName[0] && Consecutive)
+        if (manager.MustGetCard)
+        {
+            if (StackCardName[0] == AitesCardName[0] && Consecutive)
             //모양이 같다면
-        {
-            ThrowACard(i, AitesCards[i], AitesCardName[0], int.Parse(AitesCardName[1]));
-        }
-        else if (AitesCardName[0] == "J")
+            {
+                if (StackCardName[1] == "2" && AitesCardName[1] == "1")
+                    ThrowACard(i, AitesCards[i], AitesCardName[0], int.Parse(AitesCardName[1]));
+            }
+            else if (AitesCardName[0] == "J")
             //상대가 들고 있는 카드가 조커라면
-        {
-            if (AitesCardName[2] == StackCardName[2] && Consecutive)
+            {
+                if (AitesCardName[2] == StackCardName[2] && Consecutive)
                 //상대가 들고 있는 카드와 테이블에 있는 카드와 색이 같다면
-            {
-                ThrowACard(i, AitesCards[i], AitesCardName[2], 14);
-            }
-            else if (StackCardName[0] == "J"
-                && StackCardName[2] == "B"
-                && AitesCardName[2] == "C")
+                {
+                    ThrowACard(i, AitesCards[i], AitesCardName[2], 14);
+                }
+                else if (StackCardName[0] == "J"
+                    && StackCardName[2] == "B"
+                    && AitesCardName[2] == "C")
                 //상대가 들고 있는 카드가 컬러조커이고 테이블에 놓인 카드가 흑백조커라면
-            {
-                ThrowACard(i, AitesCards[i], "C", 14);
+                {
+                    ThrowACard(i, AitesCards[i], "C", 14);
+                }
+
             }
-            
-        }
-        else if (StackCardName[0] == "J")
-            //테이블에 놓인 카드가 조커라면
-        {
-            if (!manager.MustGetCard
-                && AitesCardName[2] == StackCardName[2]
-                && Consecutive)
-                //테이블에 놓인 카드와 상대가 들고 있는 카드와 색이 같다면
-            {
-                ThrowACard(i, AitesCards[i], AitesCardName[2], int.Parse(AitesCardName[1]));
-            }
-        }
-        else if (StackCardName[1] == AitesCardName[1])
+            else if (StackCardName[1] == AitesCardName[1])
             //숫자가 같다면
-        {
-            ThrowACard(i, AitesCards[i], AitesCardName[0], int.Parse(AitesCardName[1]));
+            {
+                ThrowACard(i, AitesCards[i], AitesCardName[0], int.Parse(AitesCardName[1]));
+            }
         }
         else
         {
-            ThrewCard = false;
+            if (StackCardName[0] == AitesCardName[0] && Consecutive)
+                //모양이 같다면
+            {
+                ThrowACard(i, AitesCards[i], AitesCardName[0], int.Parse(AitesCardName[1]));
+            }
+            else if (AitesCardName[0] == "J")
+                //상대가 들고 있는 카드가 조커라면
+            {
+                if (AitesCardName[2] == StackCardName[2] && Consecutive)
+                    //상대가 들고 있는 카드와 테이블에 있는 카드와 색이 같다면
+                {
+                    ThrowACard(i, AitesCards[i], AitesCardName[2], 14);
+                }
+                else if (StackCardName[0] == "J"
+                    && StackCardName[2] == "B"
+                    && AitesCardName[2] == "C")
+                    //상대가 들고 있는 카드가 컬러조커이고 테이블에 놓인 카드가 흑백조커라면
+                {
+                    ThrowACard(i, AitesCards[i], "C", 14);
+                }
+            
+            }
+            else if (StackCardName[0] == "J")
+                //테이블에 놓인 카드가 조커라면
+            {
+                if (AitesCardName[2] == StackCardName[2] && Consecutive)
+                    //테이블에 놓인 카드와 상대가 들고 있는 카드와 색이 같다면
+                {
+                    ThrowACard(i, AitesCards[i], AitesCardName[2], int.Parse(AitesCardName[1]));
+                }
+            }
+            else if (StackCardName[1] == AitesCardName[1])
+                //숫자가 같다면
+            {
+                ThrowACard(i, AitesCards[i], AitesCardName[0], int.Parse(AitesCardName[1]));
+            }
         }
         #endregion
 
         //카드를 냈을 경우 ++i되어 '빈 곳을 채운 다음 카드'를 놓지지 않게 하기 위함
         if (ThrewCard)
         {
-            StartCoroutine(AitesTurn(i));
+            StartCoroutine(AitesTurn(0));
         }
         else
         {
@@ -130,14 +164,13 @@ public class Aite : MonoBehaviour
             {
                 manager.GetCardStack += 3;
             }
-
             you.mgc2a = false;
             mgc2m = true;
         }
         else if (sum == 2)
             //낸 카드가 2라면
         {
-            manager.GetCardStack += sum;
+            manager.GetCardStack += 2;
 
             you.mgc2a = false;
             mgc2m = true;
@@ -154,7 +187,6 @@ public class Aite : MonoBehaviour
             {
                 manager.GetCardStack += 10;
             }
-
             you.mgc2a = false;
             mgc2m = true;
         }

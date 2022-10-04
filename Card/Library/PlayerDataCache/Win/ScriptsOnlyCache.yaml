@@ -1,5 +1,7 @@
 ScriptsOnlyBuild:
   usedScripts:
+    Assembly-CSharp-Editor.dll:
+    - TurboRename
     Assembly-CSharp.dll:
     - Aite
     - Card
@@ -18,6 +20,14 @@ ScriptsOnlyBuild:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
     - UnityEditor.TestTools.TestRunner.TestRun.TestJobDataHolder
+    UnityEngine.UI.dll:
+    - UnityEngine.EventSystems.EventSystem
+    - UnityEngine.EventSystems.StandaloneInputModule
+    - UnityEngine.UI.Button
+    - UnityEngine.UI.CanvasScaler
+    - UnityEngine.UI.GraphicRaycaster
+    - UnityEngine.UI.Image
+    - UnityEngine.UI.Text
   sceneClasses:
     Assets/Scenes/SampleScene.unity:
     - Class: 1
@@ -51,20 +61,44 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
+      Script: {instanceID: 11344}
+    - Class: 114
       Script: {instanceID: 11358}
     - Class: 114
       Script: {instanceID: 11460}
     - Class: 114
-      Script: {instanceID: 12612}
+      Script: {instanceID: 11568}
     - Class: 114
-      Script: {instanceID: 13758}
+      Script: {instanceID: 11614}
     - Class: 114
-      Script: {instanceID: 13896}
+      Script: {instanceID: 12114}
+    - Class: 114
+      Script: {instanceID: 12614}
+    - Class: 114
+      Script: {instanceID: 12684}
+    - Class: 114
+      Script: {instanceID: 13342}
+    - Class: 114
+      Script: {instanceID: 13760}
+    - Class: 114
+      Script: {instanceID: 13824}
+    - Class: 114
+      Script: {instanceID: 13898}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
       Script: {instanceID: 0}
   scriptHashData:
   - hash:
@@ -75,7 +109,7 @@ ScriptsOnlyBuild:
     className: CanvasScaler
   - hash:
       serializedVersion: 2
-      Hash: 9f98f9a2a67037255903666d7ff80bdd
+      Hash: ed04c25c64a532d140f046ae94aeb5a4
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CardManager
@@ -99,7 +133,7 @@ ScriptsOnlyBuild:
     className: TMP_Dropdown
   - hash:
       serializedVersion: 2
-      Hash: 85fcfbf45653280eefba69352fc496dd
+      Hash: 565361869acf6d1d37b8557d705ed568
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManager
@@ -441,7 +475,7 @@ ScriptsOnlyBuild:
     className: Outline
   - hash:
       serializedVersion: 2
-      Hash: ede5dada915a67e64a2492a32a4ec218
+      Hash: 7d9d2a1ec0844c7df41eb3f22ab9b174
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Aite
@@ -507,7 +541,7 @@ ScriptsOnlyBuild:
     className: ToggleGroup
   - hash:
       serializedVersion: 2
-      Hash: 637e15e743ea826ef28c2da71a97fc53
+      Hash: bf163adc4e29da268420e54c898ce874
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: You
