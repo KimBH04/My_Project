@@ -72,7 +72,7 @@ public class Aite : MonoBehaviour
             //모양이 같다면
             {
                 if (StackCardName[1] == "2" && AitesCardName[1] == "1")
-                    ThrowACard(i, AitesCards[i], AitesCardName[0], int.Parse(AitesCardName[1]));
+                    ThrowACard(i, AitesCards[i], AitesCardName[0], 1);
             }
             else if (AitesCardName[0] == "J")
             //상대가 들고 있는 카드가 조커라면
@@ -82,12 +82,16 @@ public class Aite : MonoBehaviour
                 {
                     ThrowACard(i, AitesCards[i], AitesCardName[2], 14);
                 }
-                else if (StackCardName[0] == "J"
-                    && StackCardName[2] == "B"
-                    && AitesCardName[2] == "C")
-                //상대가 들고 있는 카드가 컬러조커이고 테이블에 놓인 카드가 흑백조커라면
+                else if (StackCardName[2] == "B")
                 {
-                    ThrowACard(i, AitesCards[i], "C", 14);
+                    if (AitesCardName[2] == "C")
+                    {
+                        ThrowACard(i, AitesCards[i], "C", 14);
+                    }
+                    else if (AitesCardName[0] == "S" && AitesCardName[1] == "4")
+                    {
+                        ThrowACard(i, AitesCards[i], AitesCardName[2], 4);
+                    }
                 }
 
             }
@@ -149,10 +153,10 @@ public class Aite : MonoBehaviour
         }
     }
 
-    public void ThrowACard(int card, GameObject Card, string CardShape, int sum)
+    public void ThrowACard(int card, GameObject Card, string CardShape, int num)
     {
         #region Card's Type
-        if (sum == 1)
+        if (num == 1)
         {
             if (CardShape == "S")
                 //낸 카드가 Ace라면
@@ -167,7 +171,7 @@ public class Aite : MonoBehaviour
             you.mgc2a = false;
             mgc2m = true;
         }
-        else if (sum == 2)
+        else if (num == 2)
             //낸 카드가 2라면
         {
             manager.GetCardStack += 2;
@@ -175,7 +179,7 @@ public class Aite : MonoBehaviour
             you.mgc2a = false;
             mgc2m = true;
         }
-        else if (sum == 14)
+        else if (num == 14)
         {
             if (CardShape == "B")
             // 낸 카드가 흑백조커라면
@@ -190,14 +194,22 @@ public class Aite : MonoBehaviour
             you.mgc2a = false;
             mgc2m = true;
         }
+        else if (CardShape == "S" && num == 4)
+        {
+            manager.GetCardStack = 0;
+        }
         #endregion
 
         manager.ChangeCard(Card);
 
         AitesCards.RemoveAt(card);
 
-        ThrewCard = true; 
-        manager.consecutive = false;
-        ThrewOneCard = true;
+        ThrewCard = true;
+
+        if (num != 11 && num != 12 && num != 13)
+        {
+            ThrewOneCard = true;
+            manager.consecutive = false;
+        }
     }
 }

@@ -48,6 +48,10 @@ public class GameManager : MonoBehaviour
         {
             MustGetCard = true;
         }
+        else
+        {
+            MustGetCard = false;
+        }
 
         CardsText.text = $" My : {you.MyCards.Count} " +
             $"Aite : {aite.AitesCards.Count} \n" +

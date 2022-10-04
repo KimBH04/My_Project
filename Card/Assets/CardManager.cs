@@ -95,12 +95,16 @@ public class CardManager : MonoBehaviour
                     {
                         ThrowACard(MyCardName[2], 14);
                     }
-                    else if (StackCardName[0] == "J"
-                        && StackCardName[2] == "B"
-                        && MyCardName[2] == "C")
-                    //내가 가진 카드가 컬러조커이고 테이블에 놓인 카드가 흑백조커인 경우
+                    else if (StackCardName[2] == "B")
                     {
-                        ThrowACard("C", 14);
+                        if (MyCardName[2] == "C")
+                        {
+                            ThrowACard("C", 14);
+                        }
+                        else if (MyCardName[0] == "S" && MyCardName[1] == "4")
+                        {
+                            ThrowACard("S", 4);
+                        }
                     }
                 }
                 else if (StackCardName[1] == MyCardName[1])
@@ -158,10 +162,10 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    public void ThrowACard(string CardShape, int sum)
+    public void ThrowACard(string CardShape, int num)
     {
         #region Card's Type
-        if (sum == 1)
+        if (num == 1)
         {
             if (CardShape == "S")
             {
@@ -174,14 +178,14 @@ public class CardManager : MonoBehaviour
             aite.mgc2m = false;
             you.mgc2a = true;
         }
-        else if(sum == 2)
+        else if(num == 2)
         {
             manager.GetCardStack += 2;
 
             aite.mgc2m = false;
             you.mgc2a = true;
         }
-        else if (sum == 14)
+        else if (num == 14)
         {
             if (CardShape == "B")
             {
@@ -202,8 +206,10 @@ public class CardManager : MonoBehaviour
 
         Destroy(gameObject);
 
-        manager.consecutive = false;
-
-        manager.ThrewOneCard = true;
+        if (num != 11 && num != 12 && num != 13)
+        {
+            manager.consecutive = false;
+            manager.ThrewOneCard = true;
+        }
     }
 }
