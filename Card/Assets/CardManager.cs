@@ -76,12 +76,19 @@ public class CardManager : MonoBehaviour
         {
             #region Card Test
 
-            string[] StackCardName = StackCard.name.Split('_');
-            string[] MyCardName = gameObject.name.Split('_');
+            var StackCardName = StackCard.name.Split('_');
+            var MyCardName = gameObject.name.Split('_');
+
+            if (manager.Seven)
+            {
+                StackCardName[0] = manager.shape;
+            }
 
             if (manager.MustGetCard)
             {
-                if (!manager.MustGetCard && StackCardName[0] == MyCardName[0] && Consecutive)
+                Debug.Log($"{StackCardName[0]} {MyCardName[0]} {StackCardName[1]} {MyCardName[1]}");
+
+                if (StackCardName[0] == MyCardName[0] && Consecutive)
                 //내 카드와 테이블에 놓인 카드의 모양이 같은 경우
                 {
                     if (StackCardName[1] == "2" && MyCardName[1] == "1")
@@ -95,7 +102,7 @@ public class CardManager : MonoBehaviour
                     {
                         ThrowACard(MyCardName[2], 14);
                     }
-                    else if (StackCardName[2] == "B")
+                    else if (StackCardName[0] == "J" && StackCardName[2] == "B")
                     {
                         if (MyCardName[2] == "C")
                         {
@@ -115,7 +122,7 @@ public class CardManager : MonoBehaviour
             }
             else
             {
-                if (!manager.MustGetCard && StackCardName[0] == MyCardName[0] && Consecutive)
+                if (StackCardName[0] == MyCardName[0] && Consecutive)
                     //내 카드와 테이블에 놓인 카드의 모양이 같은 경우
                 {
                     ThrowACard(MyCardName[0], int.Parse(MyCardName[1]));
@@ -139,9 +146,7 @@ public class CardManager : MonoBehaviour
                 else if (StackCardName[0] == "J")
                     //테이블에 놓인 카드가 조커인 경우
                 {
-                    if (!manager.MustGetCard
-                          && MyCardName[2] == StackCardName[2]
-                          && Consecutive)
+                    if (MyCardName[2] == StackCardName[2] && Consecutive)
                           //테이블에 놓인 카드와 내가 가진 카드와 색이 같은 경우
                     {
                         ThrowACard(MyCardName[2], int.Parse(MyCardName[1]));
@@ -211,5 +216,7 @@ public class CardManager : MonoBehaviour
             manager.consecutive = false;
             manager.ThrewOneCard = true;
         }
+
+        manager.Seven = false;
     }
 }

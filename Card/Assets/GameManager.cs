@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public GameObject _Aite;
     public GameObject _Draw;
 
+    public GameObject Shape7;
+
     public Text CardsText;
     public Text Turn;
 
@@ -20,19 +22,24 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public GameObject StackCard;
     [HideInInspector]
-    public bool URTrun, AitesTurn, ThrewOneCard;
+    public bool URTrun, AitesTurn, ThrewOneCard, Seven;
     [HideInInspector]
     public bool consecutive = true;
     [HideInInspector]
     public bool MustGetCard = false;
     [HideInInspector]
     public int GetCardStack;
-
+    [HideInInspector]
+    public string shape;
+    [HideInInspector]
+    public string[] StackCardName;
 
     private bool d;
 
     private void Awake()
     {
+        Shape7.SetActive(false);
+
         StartCoroutine(Distribute(0));
         you = _You.GetComponent<You>();
         aite = _Aite.GetComponent<Aite>();
@@ -42,8 +49,10 @@ public class GameManager : MonoBehaviour
         GetCardStack = 7;
     }
 
-    void Update()
+    void FixedUpdate()
     {
+        StackCardName = StackCard.name.Split('_');
+
         if (GetCardStack > 0)
         {
             MustGetCard = true;
@@ -54,20 +63,31 @@ public class GameManager : MonoBehaviour
         }
 
         CardsText.text = $" My : {you.MyCards.Count} " +
-            $"Aite : {aite.AitesCards.Count} \n" +
+            $"Aite : {aite.AitesCards.Count}\n" +
             $"Remain : {Cards.Count} " +
-            $"Total : {you.MyCards.Count + aite.AitesCards.Count + Cards.Count}";
+            $"Total : {you.MyCards.Count + aite.AitesCards.Count + Cards.Count + 1}\n" +
+            $"Stack : {GetCardStack}";
 
         if (URTrun)
         {
-            Turn.text = "Your turn";
+            Turn.text = "Your turn\n";
         }
         else
         {
-            Turn.text = "Aite's turn";
+            Turn.text = "Aite's turn\n";
         }
 
-        Debug.Log($"Your Turn : {URTrun} || Aite's Turn : {AitesTurn}");
+        if (Seven)
+        {
+            Turn.text += shape;
+        }
+        else
+        {
+            Turn.text += StackCardName[0];
+        }
+
+
+        //Debug.Log($"Your Turn : {URTrun} || Aite's Turn : {AitesTurn}");
         //Debug.Log(ThrewOneCard);
         //Debug.Log(GetCardStack);
         //Debug.Log(MustGetCard);
@@ -78,6 +98,12 @@ public class GameManager : MonoBehaviour
     {
         if (URTrun)
         {
+            if (StackCardName[1] =="7" && !Seven && ThrewOneCard)
+            {
+                Shape7.SetActive(true);
+                return;
+            }
+
             URTrun = false;
             AitesTurn = true;
 
@@ -91,17 +117,29 @@ public class GameManager : MonoBehaviour
 
                 aite.mgc2m = true;
             }
+            else if (you.MyCards.Count == 0)
+            {
+                SceneReload();
+            }
 
             consecutive = true;
             ThrewOneCard = false;
-            StartCoroutine(Distribute(0));
+
+            if (you.mgc2a)
+            {
+                StartCoroutine(aite.AitesTurn(0));
+            }
+            else
+            {
+                StartCoroutine(Distribute(0));
+            }
 
             //Debug.Log("여기 오긴 하니/");
         }
     }
 
     public void ChangeCard(GameObject card)
-        //Resource 폴더에서 테이블에 놓여있던 카드를 찾아 리스트에 추가
+        //Resources 폴더에서 테이블에 놓여있던 카드를 찾아 리스트에 추가
     {
         GameObject StackedCard
             = Resources.Load<GameObject>(
@@ -148,7 +186,6 @@ public class GameManager : MonoBehaviour
                 d = true;
             }
 
-            MustGetCard = false;
             aite.mgc2m = you.mgc2a = false;
             GetCardStack = 0;
 
@@ -193,9 +230,31 @@ public class GameManager : MonoBehaviour
     }
 
 
+    public void Spade()
+    {
+        NumberSeven("S");
+    }
+    public void Diamond()
+    {
+        NumberSeven("D");
+    }
+    public void Heart()
+    {
+        NumberSeven("H");
+    }
+    public void Club()
+    {
+        NumberSeven("C");
+    }
+    public void NumberSeven(string Shape)
+    {
+        Shape7.SetActive(false);
+        shape = Shape;
+        Seven = true;
 
-
-
+        if (URTrun)
+            TurnEnd();
+    }
 
     public void SceneReload()
     {

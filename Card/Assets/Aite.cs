@@ -19,6 +19,8 @@ public class Aite : MonoBehaviour
     [HideInInspector]
     public bool mgc2m;
 
+    private float scanSpeed = .5f;
+
     private void Awake()
     {
         manager = gm.GetComponent<GameManager>();
@@ -35,7 +37,7 @@ public class Aite : MonoBehaviour
 
     public IEnumerator AitesTurn(int i)
     {
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSeconds(scanSpeed);
 
         ThrewCard = false;
 
@@ -43,7 +45,74 @@ public class Aite : MonoBehaviour
 
         if (i >= AitesCards.Count)      //상대의 카드수보다 크면
         {
-            if (!ThrewOneCard)      //한 번도 카드를 내지 않았다면
+            if (manager.StackCardName[1] == "7" && !manager.Seven && ThrewOneCard)
+            {
+                var c = new int[4]{ 0, 0, 0, 0 };
+
+                for (int ii = 0; ii < AitesCards.Count; ii++)
+                {
+                    var a = AitesCards[ii].name.Split('_');
+
+                    switch (a[0])
+                    {
+                        case "S":
+                            c[0]++;
+                            break;
+
+                        case "D":
+                            c[1]++;
+                            break;
+
+                        case "H":
+                            c[2]++;
+                            break;
+
+                        case "C":
+                            c[3]++;
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+                var d = 0;
+                var e = 0;
+
+                for (int ii = 0; ii < 4; ii++)
+                {
+                    if (c[ii] > d)
+                    {
+                        d = c[ii];
+                        e = ii;
+                    }
+                }
+
+                switch (e)
+                {
+                    case 0:
+                        manager.NumberSeven("S");
+                        break;
+
+                    case 1:
+                        manager.NumberSeven("D");
+                        break;
+
+                    case 2:
+                        manager.NumberSeven("H");
+                        break;
+
+                    case 3:
+                        manager.NumberSeven("C");
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            //마지막으로 낸 카드가 7이라면
+
+            else if (!ThrewOneCard)      //한 번도 카드를 내지 않았다면
             {
                 if (!you.mgc2a)
                 {
@@ -52,6 +121,10 @@ public class Aite : MonoBehaviour
 
                 you.mgc2a = true;
                 StartCoroutine(manager.Distribute(0));
+            }
+            else if (AitesCards.Count == 0)
+            {
+                manager.SceneReload();
             }
 
             manager.URTrun = true;      //나의 턴으로 변경
@@ -63,11 +136,18 @@ public class Aite : MonoBehaviour
 
         #region Card Test
 
-        string[] StackCardName = StackCard.name.Split('_');     //테이블에 놓인 카드의 이름
-        string[] AitesCardName = AitesCards[i].name.Split('_');    //상대가 들고 있는 카드의 이름
+        var StackCardName = StackCard.name.Split('_');     //테이블에 놓인 카드의 이름
+        var AitesCardName = AitesCards[i].name.Split('_');    //상대가 들고 있는 카드의 이름
+
+        if (manager.Seven)
+        {
+            StackCardName[0] = manager.shape;
+        }
 
         if (manager.MustGetCard)
         {
+            Debug.Log($"{StackCardName[0]} {AitesCardName[0]} {StackCardName[1]} {AitesCardName[1]}");
+
             if (StackCardName[0] == AitesCardName[0] && Consecutive)
             //모양이 같다면
             {
@@ -82,7 +162,7 @@ public class Aite : MonoBehaviour
                 {
                     ThrowACard(i, AitesCards[i], AitesCardName[2], 14);
                 }
-                else if (StackCardName[2] == "B")
+                else if (StackCardName[0] == "J" && StackCardName[2] == "B")
                 {
                     if (AitesCardName[2] == "C")
                     {
@@ -93,7 +173,6 @@ public class Aite : MonoBehaviour
                         ThrowACard(i, AitesCards[i], AitesCardName[2], 4);
                     }
                 }
-
             }
             else if (StackCardName[1] == AitesCardName[1])
             //숫자가 같다면
@@ -211,5 +290,12 @@ public class Aite : MonoBehaviour
             ThrewOneCard = true;
             manager.consecutive = false;
         }
+
+        manager.Seven = false;
+    }
+
+    public void ScanSpeed(float speed)
+    {
+        scanSpeed = speed;
     }
 }

@@ -27,6 +27,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
+    - UnityEngine.UI.Slider
     - UnityEngine.UI.Text
   sceneClasses:
     Assets/Scenes/SampleScene.unity:
@@ -83,6 +84,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 13824}
     - Class: 114
+      Script: {instanceID: 13872}
+    - Class: 114
       Script: {instanceID: 13898}
     - Class: 115
       Script: {instanceID: 0}
@@ -133,7 +136,7 @@ ScriptsOnlyBuild:
     className: TMP_Dropdown
   - hash:
       serializedVersion: 2
-      Hash: 565361869acf6d1d37b8557d705ed568
+      Hash: 7e61a8f0a3901412e3d7b01b489c0eab
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManager
