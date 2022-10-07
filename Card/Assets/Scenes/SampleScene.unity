@@ -1605,6 +1605,7 @@ MonoBehaviour:
   MustGetCard: 1
   GetCardStack: 0
   shape: 
+  color: 
   StackCardName: []
 --- !u!4 &1121611106
 Transform:
@@ -1819,7 +1820,7 @@ MonoBehaviour:
   m_MinValue: 0.1
   m_MaxValue: 0.5
   m_WholeNumbers: 0
-  m_Value: 0.5
+  m_Value: 0.2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:

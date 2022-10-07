@@ -91,19 +91,19 @@ public class Aite : MonoBehaviour
                 switch (e)
                 {
                     case 0:
-                        manager.NumberSeven("S");
+                        manager.NumberSeven("S", "B");
                         break;
 
                     case 1:
-                        manager.NumberSeven("D");
+                        manager.NumberSeven("D", "C");
                         break;
 
                     case 2:
-                        manager.NumberSeven("H");
+                        manager.NumberSeven("H", "C");
                         break;
 
                     case 3:
-                        manager.NumberSeven("C");
+                        manager.NumberSeven("C", "B");
                         break;
 
                     default:
@@ -122,7 +122,7 @@ public class Aite : MonoBehaviour
                 you.mgc2a = true;
                 StartCoroutine(manager.Distribute(0));
             }
-            else if (AitesCards.Count == 0)
+            else if (AitesCards.Count == 0 || AitesCards.Count > 20)
             {
                 manager.SceneReload();
             }
@@ -142,28 +142,26 @@ public class Aite : MonoBehaviour
         if (manager.Seven)
         {
             StackCardName[0] = manager.shape;
+            StackCardName[2] = manager.color;
         }
 
         if (manager.MustGetCard)
         {
             Debug.Log($"{StackCardName[0]} {AitesCardName[0]} {StackCardName[1]} {AitesCardName[1]}");
 
-            if (StackCardName[0] == AitesCardName[0] && Consecutive)
-            //모양이 같다면
-            {
-                if (StackCardName[1] == "2" && AitesCardName[1] == "1")
-                    ThrowACard(i, AitesCards[i], AitesCardName[0], 1);
-            }
-            else if (AitesCardName[0] == "J")
+            if (AitesCardName[0] == "J")
             //상대가 들고 있는 카드가 조커라면
             {
+                Debug.Log("j");
+
                 if (AitesCardName[2] == StackCardName[2] && Consecutive)
                 //상대가 들고 있는 카드와 테이블에 있는 카드와 색이 같다면
                 {
                     ThrowACard(i, AitesCards[i], AitesCardName[2], 14);
                 }
-                else if (StackCardName[0] == "J" && StackCardName[2] == "B")
+                else if (StackCardName[2] == "B")
                 {
+                    Debug.Log("b");
                     if (AitesCardName[2] == "C")
                     {
                         ThrowACard(i, AitesCards[i], "C", 14);
@@ -174,9 +172,21 @@ public class Aite : MonoBehaviour
                     }
                 }
             }
+            else if (StackCardName[0] == AitesCardName[0] && Consecutive)
+            //모양이 같다면
+            {
+                Debug.Log("aaaa");
+
+                if (StackCardName[1] == "2" && AitesCardName[1] == "1")
+                {
+                    ThrowACard(i, AitesCards[i], AitesCardName[0], 1);
+                }
+            }
             else if (StackCardName[1] == AitesCardName[1])
             //숫자가 같다면
             {
+                Debug.Log("bbbbb");
+
                 ThrowACard(i, AitesCards[i], AitesCardName[0], int.Parse(AitesCardName[1]));
             }
         }

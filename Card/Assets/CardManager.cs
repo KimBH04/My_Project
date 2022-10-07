@@ -82,19 +82,14 @@ public class CardManager : MonoBehaviour
             if (manager.Seven)
             {
                 StackCardName[0] = manager.shape;
+                StackCardName[2] = manager.color;
             }
 
             if (manager.MustGetCard)
             {
                 Debug.Log($"{StackCardName[0]} {MyCardName[0]} {StackCardName[1]} {MyCardName[1]}");
 
-                if (StackCardName[0] == MyCardName[0] && Consecutive)
-                //내 카드와 테이블에 놓인 카드의 모양이 같은 경우
-                {
-                    if (StackCardName[1] == "2" && MyCardName[1] == "1")
-                        ThrowACard(MyCardName[0], int.Parse(MyCardName[1]));
-                }
-                else if (MyCardName[0] == "J")
+                if (MyCardName[0] == "J")
                 //내가 가진 카드가 조커인 경우
                 {
                     if (MyCardName[2] == StackCardName[2] && Consecutive)
@@ -113,6 +108,15 @@ public class CardManager : MonoBehaviour
                             ThrowACard("S", 4);
                         }
                     }
+                }
+                else if (StackCardName[0] == MyCardName[0] && Consecutive)
+                //내 카드와 테이블에 놓인 카드의 모양이 같은 경우
+                {
+                    if (StackCardName[1] == "2" && MyCardName[1] == "1")
+                    { 
+                        ThrowACard(MyCardName[0], int.Parse(MyCardName[1]));
+                    }
+                    
                 }
                 else if (StackCardName[1] == MyCardName[1])
                 //숫자가 같은 경우

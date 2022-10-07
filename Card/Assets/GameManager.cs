@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public int GetCardStack;
     [HideInInspector]
-    public string shape;
+    public string shape, color;
     [HideInInspector]
     public string[] StackCardName;
 
@@ -51,7 +51,8 @@ public class GameManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        StackCardName = StackCard.name.Split('_');
+        if (StackCard != null)
+            StackCardName = StackCard.name.Split('_');
 
         if (GetCardStack > 0)
         {
@@ -62,11 +63,13 @@ public class GameManager : MonoBehaviour
             MustGetCard = false;
         }
 
-        CardsText.text = $" My : {you.MyCards.Count} " +
+        /*CardsText.text = $" My : {you.MyCards.Count} " +
             $"Aite : {aite.AitesCards.Count}\n" +
             $"Remain : {Cards.Count} " +
             $"Total : {you.MyCards.Count + aite.AitesCards.Count + Cards.Count + 1}\n" +
-            $"Stack : {GetCardStack}";
+            $"Stack : {GetCardStack}";*/
+
+        CardsText.text = "Rival : " + aite.AitesCards.Count;
 
         if (URTrun)
         {
@@ -83,7 +86,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Turn.text += StackCardName[0];
+            if (StackCard != null)
+                Turn.text += StackCardName[0];
         }
 
 
@@ -117,7 +121,7 @@ public class GameManager : MonoBehaviour
 
                 aite.mgc2m = true;
             }
-            else if (you.MyCards.Count == 0)
+            else if (you.MyCards.Count == 0 || you.MyCards.Count > 20)
             {
                 SceneReload();
             }
@@ -232,24 +236,25 @@ public class GameManager : MonoBehaviour
 
     public void Spade()
     {
-        NumberSeven("S");
+        NumberSeven("S", "B");
     }
     public void Diamond()
     {
-        NumberSeven("D");
+        NumberSeven("D", "C");
     }
     public void Heart()
     {
-        NumberSeven("H");
+        NumberSeven("H", "C");
     }
     public void Club()
     {
-        NumberSeven("C");
+        NumberSeven("C", "B");
     }
-    public void NumberSeven(string Shape)
+    public void NumberSeven(string Shape, string Color)
     {
         Shape7.SetActive(false);
         shape = Shape;
+        color = Color;
         Seven = true;
 
         if (URTrun)
