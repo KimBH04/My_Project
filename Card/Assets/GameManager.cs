@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,7 +23,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public GameObject StackCard;
     [HideInInspector]
-    public bool URTrun, AitesTurn, ThrewOneCard, Seven;
+    public bool URTurn, AitesTurn, ThrewOneCard, Seven;
     [HideInInspector]
     public bool consecutive = true;
     [HideInInspector]
@@ -38,69 +39,101 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Shape7.SetActive(false);
+        if (Shape7 != null)
+        {
+            Shape7.SetActive(false);
 
-        StartCoroutine(Distribute(0));
-        you = _You.GetComponent<You>();
-        aite = _Aite.GetComponent<Aite>();
+            StartCoroutine(Distribute(0));
+            you = _You.GetComponent<You>();
+            aite = _Aite.GetComponent<Aite>();
 
-        aite.mgc2m = you.mgc2a = true;
-        MustGetCard = false;    //원래 안 해도 되는데 버그인지 자꾸 true가 되서 넣음
-        GetCardStack = 7;
+            aite.mgc2m = you.mgc2a = true;
+            MustGetCard = false;    //원래 안 해도 되는데 버그인지 자꾸 true가 되서 넣음
+            GetCardStack = 7;
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetButtonDown("Cancel"))
+        {
+            if (SceneManager.GetActiveScene().name == "Main")
+            {
+                SceneManager.LoadScene("Title");
+            }
+            else if (SceneManager.GetActiveScene().name == "Title")
+            {
+                Application.Quit();
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            }
+        }
     }
 
     void FixedUpdate()
     {
-        if (StackCard != null)
-            StackCardName = StackCard.name.Split('_');
-
-        if (GetCardStack > 0)
-        {
-            MustGetCard = true;
-        }
-        else
-        {
-            MustGetCard = false;
-        }
-
-        /*CardsText.text = $" My : {you.MyCards.Count} " +
-            $"Aite : {aite.AitesCards.Count}\n" +
-            $"Remain : {Cards.Count} " +
-            $"Total : {you.MyCards.Count + aite.AitesCards.Count + Cards.Count + 1}\n" +
-            $"Stack : {GetCardStack}";*/
-
-        CardsText.text = "Rival : " + aite.AitesCards.Count;
-
-        if (URTrun)
-        {
-            Turn.text = "Your turn\n";
-        }
-        else
-        {
-            Turn.text = "Aite's turn\n";
-        }
-
-        if (Seven)
-        {
-            Turn.text += shape;
-        }
-        else
+        try
         {
             if (StackCard != null)
-                Turn.text += StackCardName[0];
+                StackCardName = StackCard.name.Split('_');
+
+            if (GetCardStack > 0)
+            {
+                MustGetCard = true;
+            }
+            else
+            {
+                MustGetCard = false;
+            }
+
+            /*CardsText.text = $" My : {you.MyCards.Count} " +
+                $"Aite : {aite.AitesCards.Count}\n" +
+                $"Remain : {Cards.Count} " +
+                $"Total : {you.MyCards.Count + aite.AitesCards.Count + Cards.Count + 1}\n" +
+                $"Stack : {GetCardStack}";*/
+
+            CardsText.text = "Rival : " + aite.AitesCards.Count;
+
+            if (URTurn)
+            {
+                Turn.text = "You\n";
+            }
+            else
+            {
+                Turn.text = "Rival\n";
+            }
+
+            if (Seven)
+            {
+                Turn.text += shape;
+            }
+            else
+            {
+                if (StackCard != null)
+                    Turn.text += StackCardName[0];
+            }
+
+
+            //Debug.Log($"Your Turn : {URTrun} || Aite's Turn : {AitesTurn}");
+            //Debug.Log(ThrewOneCard);
+            //Debug.Log(GetCardStack);
+            //Debug.Log(MustGetCard);
         }
-
-
-        //Debug.Log($"Your Turn : {URTrun} || Aite's Turn : {AitesTurn}");
-        //Debug.Log(ThrewOneCard);
-        //Debug.Log(GetCardStack);
-        //Debug.Log(MustGetCard);
+        catch (UnassignedReferenceException)
+        {
+            return;
+        }
+        catch (NullReferenceException)
+        {
+            return;
+        }
     }
 
     public void TurnEnd()
         //내 턴을 끝냈을 때
     {
-        if (URTrun)
+        if (URTurn)
         {
             if (StackCardName[1] =="7" && !Seven && ThrewOneCard)
             {
@@ -108,7 +141,7 @@ public class GameManager : MonoBehaviour
                 return;
             }
 
-            URTrun = false;
+            URTurn = false;
             AitesTurn = true;
 
             if (!ThrewOneCard)
@@ -121,7 +154,7 @@ public class GameManager : MonoBehaviour
 
                 aite.mgc2m = true;
             }
-            else if (you.MyCards.Count == 0 || you.MyCards.Count > 20)
+            else if (you.MyCards.Count == 0)
             {
                 SceneReload();
             }
@@ -168,7 +201,7 @@ public class GameManager : MonoBehaviour
 
         //Debug.Log(i);
 
-        int j = Random.Range(0, Cards.Count);
+        int j = UnityEngine.Random.Range(0, Cards.Count);
         //0부터 카드 개수 사이의 수 랜덤
 
         if (i > GetCardStack * 2 - 1)
@@ -186,12 +219,21 @@ public class GameManager : MonoBehaviour
 
                 Cards.RemoveAt(j);
 
-                URTrun = true;
+                URTurn = true;
                 d = true;
             }
 
             aite.mgc2m = you.mgc2a = false;
             GetCardStack = 0;
+
+            if (you.MyCards.Count > 20)
+            {
+                SceneReload();
+            }
+            if (aite.AitesCards.Count > 20)
+            {
+                SceneReload();
+            }
 
             if (AitesTurn)
             {
@@ -199,7 +241,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                URTrun = true;
+                URTurn = true;
             }
 
             yield break;
@@ -257,12 +299,12 @@ public class GameManager : MonoBehaviour
         color = Color;
         Seven = true;
 
-        if (URTrun)
+        if (URTurn)
             TurnEnd();
     }
 
     public void SceneReload()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Main");
     }
 }

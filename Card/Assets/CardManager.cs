@@ -12,9 +12,9 @@ public class CardManager : MonoBehaviour
 
     [HideInInspector]
     public bool Their;
-    private bool ThrewOneCard;
+    //private bool ThrewOneCard;
     private bool Consecutive;
-    private bool turn;
+    //private bool turn;
     private GameManager manager;
     private GameObject StackCard;
     private You you;
@@ -42,14 +42,14 @@ public class CardManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        turn = manager.URTrun;
+        //turn = manager.URTurn;
         StackCard = manager.StackCard;
         Consecutive = manager.consecutive;
 
-        if (turn)
-        {
+        //if (turn)
+        //{
             //Debug.Log("is your turn");
-        }
+        //}
 
         #region slideUp
 
@@ -61,8 +61,8 @@ public class CardManager : MonoBehaviour
 
         transform.localPosition
             = new Vector3(
-                transform.localPosition.x, 
-                transform.localPosition.y, 
+                transform.localPosition.x,
+                transform.localPosition.y,
                 transform.localPosition.z + z / 2.5f);
 
         #endregion
@@ -72,7 +72,7 @@ public class CardManager : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (turn && transform.parent.name != "Game Manager")
+        if (manager.URTurn && transform.parent.name != "Game Manager")
         {
             #region Card Test
 
@@ -165,10 +165,10 @@ public class CardManager : MonoBehaviour
 
             #endregion
         }
-        else
-        {
-            //Debug.Log("isn't your turn");
-        }
+//        else
+  //      {
+    //        //Debug.Log("isn't your turn");
+      //  }
     }
 
     public void ThrowACard(string CardShape, int num)

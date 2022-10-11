@@ -111,7 +111,6 @@ public class Aite : MonoBehaviour
                 }
             }
             //마지막으로 낸 카드가 7이라면
-
             else if (!ThrewOneCard)      //한 번도 카드를 내지 않았다면
             {
                 if (!you.mgc2a)
@@ -122,12 +121,12 @@ public class Aite : MonoBehaviour
                 you.mgc2a = true;
                 StartCoroutine(manager.Distribute(0));
             }
-            else if (AitesCards.Count == 0 || AitesCards.Count > 20)
+            else if (AitesCards.Count == 0)
             {
                 manager.SceneReload();
             }
 
-            manager.URTrun = true;      //나의 턴으로 변경
+            manager.URTurn = true;      //나의 턴으로 변경
             manager.consecutive = true;
             ThrewOneCard = false;
 
